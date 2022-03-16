@@ -11,30 +11,33 @@ import matplotlib.pyplot as plt
 from gensim.models import CoherenceModel
 from pyLDAvis import gensim_models
 
-from nlp_utils.text_processing import prepare_text
+from nlp_utils.text_processing import prepare_text, prepare_save_corpus_dict
 
 
 # Compute Coherence Score
 
 def compute_coherence(corpus, dictionary, k, b, a):
-    ldamodel = gensim.models.ldamodel.LdaModel(corpus, num_topics=k, id2word=dictionary, passes=15,
-                                               alpha=a, eta=b)
+    ldamodel = gensim.models.ldamulticore.LdaModel(corpus, num_topics=k, id2word=dictionary, passes=15,
+                                               alpha=a, eta=b, chunksize=100)
     coherence = CoherenceModel(model=ldamodel, texts=text_data, dictionary=dictionary, coherence='c_v')
     return coherence.get_coherence()
 
 
 if __name__ == '__main__':
-
+    GENERATE_DATA = True
     spacy.load('en_core_web_sm')
     freeze_support()
+    if GENERATE_DATA:
+        text_data = prepare_text(input_type='file', file_path='data/student_responses.tsv',
+                                 train_percent=0.25)
+        prepare_save_corpus_dict(text_data)
+        dictionary = gensim.corpora.Dictionary(text_data)
+        corpus = [dictionary.doc2bow(text) for text in text_data]
 
-    text_data = prepare_text(file_path='../data/student_responses.tsv')
-
-    dictionary = gensim.corpora.Dictionary(text_data)
-    corpus = [dictionary.doc2bow(text) for text in text_data]
-
-    pickle.dump(corpus, open('../data/corpus.pkl', 'wb'))
-    dictionary.save('../data/dictionary.gensim')
+    else:
+        text_data= pickle.load(open('data/text_data.pkl', 'rb'))
+        dictionary = gensim.corpora.Dictionary.load('data/dictionary.gensim')
+        corpus = pickle.load(open('data/corpus.pkl', 'rb'))
 
     ## calculating out possible coherence scores and metaparameters
 
@@ -84,10 +87,10 @@ if __name__ == '__main__':
                         model_results['Beta'].append(b)
                         model_results['Coherence'].append(cv)
                         pbar.update(1)
-        pd.DataFrame(model_results).to_csv('../models/lda_tuning_results.csv', index=False)
+        pd.DataFrame(model_results).to_csv('models/lda_tuning_results.csv', index=False)
         pbar.close()
 
 
 
-lda_display = gensim_models.prepare(ldamodel, corpus, dictionary, sort_topics=False)
-ldavis_text = pyLDAvis.save_html(lda_display, 'static/ldavis.html')
+# lda_display = gensim_models.prepare(ldamodel, corpus, dictionary, sort_topics=False)
+# ldavis_text = pyLDAvis.save_html(lda_display, 'static/ldavis.html')

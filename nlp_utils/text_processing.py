@@ -43,7 +43,7 @@ def tokenize_text_for_lda(text, stop):
 
 def prepare_text(input_type = 'file',
                  input_text = None,
-                 train_percent = 0.50,
+                 train_percent = 0.005,
                  file_path='data/student_responses.tsv'):
 
     def make_bigrams(texts):
@@ -74,6 +74,7 @@ def prepare_text(input_type = 'file',
     return text_data
 
 def prepare_save_corpus_dict(text_data):
+    pickle.dump(text_data, open('data/text_data.pkl', 'wb'))
     dictionary = corpora.Dictionary(text_data)
     corpus = [dictionary.doc2bow(text) for text in text_data]
     pickle.dump(corpus, open('data/corpus.pkl', 'wb'))
