@@ -1,0 +1,7 @@
+POST http://localhost:5000/topic_model
+Content-Type: application/json
+
+{"sent":"composite restoration and contouring of third molar. placed rubber dam and trimmed margins"}
+
+###
+
