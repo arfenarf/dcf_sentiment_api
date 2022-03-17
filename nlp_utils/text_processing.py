@@ -24,10 +24,6 @@ def tokenize(text):
     return lda_tokens
 
 
-def get_lemma2(word):
-    return WordNetLemmatizer().lemmatize(word)
-
-
 def prepare_stopwords():
     en_stop = set(nltk.corpus.stopwords.words('english'))
     new_stopwords = {'appointment', 'would', 'patient', 'thanks', 'thank', 'better', 'question'}
@@ -39,7 +35,7 @@ def tokenize_text_for_lda(text, stop):
     tokens = tokenize(text)
     tokens = [token for token in tokens if len(token) > 4]
     tokens = [token for token in tokens if token not in stop]
-    tokens = [get_lemma2(token) for token in tokens]
+    tokens = [WordNetLemmatizer().lemmatize(token) for token in tokens]
     return tokens
 
 
