@@ -4,12 +4,12 @@ import gensim
 import nltk
 import pandas as pd
 import pyLDAvis
-from tqdm import tqdm
 from gensim import corpora
 from gensim.models import CoherenceModel
 from nltk import WordNetLemmatizer
 from pyLDAvis import gensim_models
 from spacy.lang.en import English
+from tqdm import tqdm
 
 
 def tokenize(text):
@@ -94,6 +94,7 @@ def calculate_save_model(corpus, k, dictionary, passes, a, b):
         print(topic)
     return ldamodel
 
+
 def predict_topic(sent, model_path):
     model = gensim.models.ldamulticore.LdaMulticore.load(model_path)
     dictionary = corpora.Dictionary.load('data/dictionary.gensim')
@@ -102,7 +103,9 @@ def predict_topic(sent, model_path):
     pred = dict(model[sent_corp])
     return pred
 
+
 if __name__ == '__main__':
+    # this will generate a new model and accompanying LDAVis for a given set of parameters
     corpus = pickle.load(open('data/corpus.pkl', 'rb'))
     dictionary = corpora.Dictionary.load('data/dictionary.gensim')
 

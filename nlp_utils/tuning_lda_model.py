@@ -5,10 +5,11 @@ import gensim
 import numpy as np
 import pandas as pd
 import spacy
-from tqdm import tqdm
 from gensim.models import CoherenceModel
+from tqdm import tqdm
 
 from nlp_utils.text_processing import prepare_text, prepare_save_corpus_dict
+
 
 # Compute Coherence Score
 

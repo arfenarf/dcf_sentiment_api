@@ -14,7 +14,7 @@ def topic_model():
     model_path = 'models/model_8_symmetric_0.91.gensim'
     sent = request.get_json()['sent']
     results = predict_topic(sent, model_path)
-    # we're incrementing the zero-based index to 1-based
+    # we're incrementing the zero-based index to 1-based to match the viz
     result_stringified = {k + 1 :(str(round(v,5)) if isinstance(v,np.float32) else v) for (k,v) in results.items()}
     return jsonify(result_stringified)
 
